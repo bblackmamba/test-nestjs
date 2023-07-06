@@ -1,0 +1,6 @@
+/.yarn/
+/node_modules/
+/.env
+/dist/
+/database/config/config.json
+/.idea/
