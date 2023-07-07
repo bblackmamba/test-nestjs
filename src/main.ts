@@ -4,8 +4,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  const port = process.env.PORT || 3000;
+
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix(process.env.GLOBAL_PREFIX);
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
@@ -21,6 +23,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  await app.listen(port, () => console.log(`⚡️[server]: Server is running at https://localhost:${port}`));
 }
 bootstrap();

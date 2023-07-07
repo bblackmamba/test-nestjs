@@ -1,6 +1,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('users', {
+    await queryInterface.createTable('users', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -33,9 +33,15 @@ module.exports = {
         allowNull: true,
         type: Sequelize.DATE,
       },
-    });
+    }).then(() => queryInterface.addIndex('users', {
+      name: 'users_email_index',
+      fields: ['email'],
+    }));
   },
   async down(queryInterface) {
-    return queryInterface.dropTable('users');
+    await queryInterface.removeIndex(
+        'users',
+        'users_email_index',
+    ).then(() =>  queryInterface.dropTable('users'));
   },
 };
