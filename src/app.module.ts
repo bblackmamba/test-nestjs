@@ -2,6 +2,17 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ApplicationModule } from './application/application.module';
+import { ApplicationCommentModule } from './application-comment/application-comment.module';
+import UserModule from "./user/user.module";
+import AuthModule from "./auth/auth.module";
+import TokenModule from "./token/token.module";
+import CaslModule from "./casl/casl.module";
+import RoleModule from "./role/role.module";
+import {APP_GUARD, APP_INTERCEPTOR} from "@nestjs/core";
+import AccessTokenGuard from "./common/guards/access-token.guard";
+import RolesGuard from "./common/guards/roles.guard";
+import AppInterceptor from "./common/interceptors/app.interceptor";
 
 @Module({
   imports: [
@@ -20,6 +31,27 @@ import { SequelizeModule } from '@nestjs/sequelize';
       synchronize: true,
       omitNull: true,
     }),
+    AuthModule,
+    UserModule,
+    TokenModule,
+    CaslModule,
+    RoleModule,
+    ApplicationModule,
+    ApplicationCommentModule,
   ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AppInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ]
 })
 export class AppModule {}
